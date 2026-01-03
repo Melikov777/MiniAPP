@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MiniAPP.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace MiniAPP.Configurations;
 
 public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Restaurant> builder)
+    public void Configure(EntityTypeBuilder<Restaurant> builder)
     {
         builder.ToTable(nameof(Restaurant));
         builder.HasKey(r => r.Id);
