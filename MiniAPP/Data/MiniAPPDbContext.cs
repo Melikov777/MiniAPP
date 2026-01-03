@@ -24,7 +24,7 @@ namespace MiniAPP.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new RestaurantConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MiniAPPDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
         }
     }
