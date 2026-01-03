@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MiniAPP.Configurations;
 using MiniAPP.Entities;
 using MiniAPP.Entitiesp;
 using System;
@@ -17,9 +18,14 @@ namespace MiniAPP.Data
         public DbSet<Reservation> Reservations { get; set; }
 
         
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=MiniAppDb;Username=postgres;Password=120272534Galatasaray1905;");
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new RestaurantConfiguration());
+            base.OnModelCreating(modelBuilder);
         }
     }
 
