@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniAPP.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MiniAPP.Migrations
 {
     [DbContext(typeof(MiniAPPDbContext))]
-    partial class MiniAPPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260103145536_AddedReservationConfiguration")]
+    partial class AddedReservationConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,15 +81,18 @@ namespace MiniAPP.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurant", (string)null);
                 });
 
             modelBuilder.Entity("MiniAPP.Entitiesp.DiningTable", b =>
@@ -101,7 +107,9 @@ namespace MiniAPP.Migrations
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("integer");
@@ -111,9 +119,13 @@ namespace MiniAPP.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RestaurantId");
+                    b.HasIndex("RestaurantId", "DiningTableNumber")
+                        .IsUnique();
 
-                    b.ToTable("DiningTables");
+                    b.ToTable("DiningTable", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_DiningTable_Capacity", "\"SeatingCapacity\" >= 1");
+                        });
                 });
 
             modelBuilder.Entity("MiniAPP.Entities.Reservation", b =>
